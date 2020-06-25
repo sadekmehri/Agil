@@ -1,0 +1,16 @@
+{% extends "./email/layout.html" %}
+{% block body %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+    <tr>
+        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+            <p style="text-align: justify;text-justify: inter-word;">Si vous avez reçu cet Email, cela signifie que nous avons récemment notifié une tentative de changement de mot de passe , car nous n'étions pas sûrs qu'il s'agissait bien de vous. Pour protéger votre compte, nous vous envoyons un e-mail lorsque nous remarquons une activité de connexion inhabituelle.</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+            <p style="margin: 0;">Si vous avez des questions, veuillez simplement contacter l'administrateur.</p>
+        </td>
+    </tr>
+</table>
+{% endblock %}         

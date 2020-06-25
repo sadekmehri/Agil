@@ -1,0 +1,122 @@
+{% extends "./chef/layout/profile.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/materialdesignicons.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/settings.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/do.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='css/placeholder-loading.min.css') }}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.twbsPagination.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.setting') }}" class="breadcrumb-item">Paramètre</a>
+            <span class="breadcrumb-item active">Historique</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="main-panel">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-4 grid-margin stretch-card">
+               <div class="card border" style="height: 567px;">
+                  <div class="profile-card">
+                     <div class="profile-header">
+                        <div class="cover-image">
+                           <img src="{{ url_for('static', filename='photo/profile.jpg') }}" class="img img-fluid" id="imageChange" alt="">
+                        </div>
+                        <div class="user-image">
+                           <img src="{{ url_for('static', filename='photo/employee.jpg') }}" class="img" id="profile-image1" alt="">
+                        </div>
+                     </div>
+                     <div class="profile-content">
+                     {% if current_user.is_authenticated %}
+                        <div class="profile-name">{{ current_user.nomUser }} {{ current_user.prenomUser }}</div>
+                        <div class="profile-designation">Chef de Station</div>
+                     {% endif %}
+                        <ul class="profile-info-list">
+                           <a href="{{ url_for('chef.setting') }}" class="profile-info-list-item border"><i class="mdi mdi-eye"></i>À propos</a>
+                           <a href="{{ url_for('chef.settingHistorique') }}" class="profile-info-list-item border"><i class="mdi mdi-bookmark-check"></i>Historique de connexion</a>
+                           <a href="{{ url_for('chef.settingPassword') }}"  class="profile-info-list-item border"><i class="mdi mdi-gate"></i>Password</a>
+                           <a href="{{ url_for('chef.settingNotification') }}" class="profile-info-list-item border"><i class="mdi mdi-clock"></i>Notifications</a>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-8 grid-margin stretch-card">
+               <div class="card mb-3 border">
+                  <div class="card-header header-elements-sm-inline">
+                     <h6 class="card-title">Historique de Connexion</h6>
+                     <div class="header-elements">
+                        <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges">
+                        <i class="icon-calendar3 mr-2"></i>
+                        <span></span>
+                        </a>
+                     </div>
+                  </div>
+                  <div class="card-body" style="height: 445px;">
+                     <div id="data">
+                        <ol class="activity-feed mb-0" id="fetch"></ol>
+                     </div>
+                  </div>
+                  <div class="card-footer">
+                     <div class="row d-flex justify-content-center">
+                        <ul id="pagination" class="pagination-sm pagination">
+                           <li class="page-item first disabled"><a href="#" class="page-link">First</a></li>
+                           <li class="page-item prev disabled"><a href="#" class="page-link">Previous</a></li>
+                           <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                           <li class="page-item next disabled"><a href="#" class="page-link">Next</a></li>
+                           <li class="page-item last disabled"><a href="#" class="page-link">Last</a></li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chef/setting/historique.js') }}"></script>
+{% endblock %}

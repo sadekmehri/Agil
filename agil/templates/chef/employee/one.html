@@ -1,0 +1,182 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/placeholder-loading.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ url_for('static', filename='css/do.css') }}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ url_for('static', filename='js/dragula.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/extension_dnd.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.twbsPagination.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+<style>
+   #profile-image1 {
+   cursor: pointer;
+   width: 100px;
+   height: 100px;
+   border:2px solid #03b1ce ;}
+   .tital{ font-size:16px; font-weight:500;}
+   .bot-border{ border-bottom:1px #f8f8f8 solid;  margin:5px 0  5px 0}
+</style>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_employee_station') }}" class="breadcrumb-item">Employés</a>
+            <span class="breadcrumb-item active">Profil d'employé</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-body">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="panel panel-default border" style="height: 855px;">
+                     <h2 class="h2" align="center" style="margin:5px 0 5px 0;padding:5px 5px 10px 20px;">Détails sur cet employé</h2>
+                     <div class="panel-body">
+                        <div class="box box-info">
+                           <div class="box-body" style="margin:5px 0 5px 0;padding:5px 5px 10px 20px;">
+                              <div class="col-sm-12">
+                                 <div align="center">
+                                    <img alt="User Pic" src="{{ url_for('static', filename='photo/employee.jpg') }}" id="profile-image1" class="img-circle img-responsive">
+                                 </div>
+                                 <br>
+                              </div>
+                              {% if records %}
+                              <div class="col-sm-12">
+                                 <h4 class="h4" align="center" style="color:#00b1b1;">{{ records.Role.NomRole }}</h4>
+                              </div>
+                              <div class="clearfix"></div>
+                              <hr style="margin:5px 0 5px 0;">
+                              <div class="col-sm-5 col-xs-6 tital">Code Employé :</div>
+                              <div class="col-sm-7 col-xs-6 ">{{ records.codeEmp }}</div>
+                              <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Cin :</div>
+                              <div class="col-sm-7 col-xs-6 ">{{ records.cinEmp }}</div>
+                              <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Nom :</div>
+                              <div class="col-sm-7 col-xs-6 ">{{ records.nomEmp }}</div>
+                              <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital " >Prénom :</div>
+                              <div class="col-sm-7"> {{ records.prenomEmp }}</div>
+                               <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Date de naissance :</div>
+                              <div class="col-sm-7">{{ records.dateEmp }}</div>
+                               <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Telephone :</div>
+                              <div class="col-sm-7">{{ records.telEmp }}</div>
+                               <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Salaire :</div>
+                              <div class="col-sm-7">{{ records.salEmp}} TND</div>
+                               <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Groupe :</div>
+                              <div class="col-sm-7">{{ records.Groupe.NomGroupe }}</div>
+                              <div class="clearfix"></div>
+                              <div class="bot-border"></div>
+                              <div class="bot-border"></div>
+                              <div class="col-sm-5 col-xs-6 tital">Station :</div>
+                              <div class="col-sm-7">{{ records.Station.NomStation }}</div>
+                              <div class="clearfix"></div>
+                           </div>
+                           {% endif %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-12" id="cards-target-left">
+                           <!-- Section 1 -->
+                           <div class="card mb-3 border">
+                              <div class="card-header header-elements-sm-inline">
+                                  <h6 class="card-title">Détails de Congé</h6>
+                                  <div class="header-elements">
+                                      <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges">
+                                          <i class="icon-calendar3 mr-2"></i>
+                                          <span></span>
+                                      </a>
+                                  </div>
+                              </div>
+                              <div class="card-body" style="height: 297px;">
+                                 <div id="data">
+                                    <ol class="activity-feed mb-0" id="fetch"></ol>
+                                 </div>
+                              </div>
+                              <div class="card-footer">
+                                 <div class="row d-flex justify-content-center">
+                                    <ul id="pagination" class="pagination-sm pagination">
+                                       <li class="page-item first disabled"><a href="#" class="page-link">First</a></li>
+                                       <li class="page-item prev disabled"><a href="#" class="page-link">Previous</a></li>
+                                       <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                                       <li class="page-item next disabled"><a href="#" class="page-link">Next</a></li>
+                                       <li class="page-item last disabled"><a href="#" class="page-link">Last</a></li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- Section 2 -->
+                           <div class="card mb-3 border">
+                              <div class="card-header header-elements-sm-inline">
+                                  <h6 class="card-title">Détails d'absence</h6>
+                                  <div class="header-elements">
+                                      <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges1">
+                                          <i class="icon-calendar3 mr-2"></i>
+                                          <span></span>
+                                      </a>
+                                  </div>
+                              </div>
+                              <div class="card-body" style="height: 297px;">
+                                 <div id="dataAbsence">
+                                    <ol class="activity-feed mb-0" id="fetchAbsence"></ol>
+                                 </div>
+                              </div>
+                              <div class="card-footer">
+                                 <div class="row d-flex justify-content-center">
+                                    <ul id="paginationAbsence" class="pagination-sm pagination">
+                                       <li class="page-item first disabled"><a href="#" class="page-link">First</a></li>
+                                       <li class="page-item prev disabled"><a href="#" class="page-link">Previous</a></li>
+                                       <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                                       <li class="page-item next disabled"><a href="#" class="page-link">Next</a></li>
+                                       <li class="page-item last disabled"><a href="#" class="page-link">Last</a></li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function GetIdEmployee(){
+       let idStation = 0;
+       {% if data %} idStation = {{ data }}; {% endif %}
+      return idStation;
+   }
+</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chef/employee/detailsEmployee.js') }}"></script>
+{% endblock %}

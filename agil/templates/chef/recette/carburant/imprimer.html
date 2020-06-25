@@ -1,0 +1,105 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/pdfGenerator/jspdf.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/pdfGenerator/jspdf.plugin.autotable.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chef/carburant/impCarburant.js') }}"></script>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_recette_carburant') }}" class="breadcrumb-item">Recette Carburant</a>
+            <span class="breadcrumb-item active">Imprimer</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-body">
+         <div class="row">
+            <form method="post" action="" id="idForm">
+               {{ form.hidden_tag() }}
+               <div class="form-group">
+                  <div class="row">
+                     <div class="col-md-4">
+                        {{ form.Dat.label(class="font-weight-semibold") }}
+                        {{ form.Dat(class="form-control",placeholder="Date",autocomplete="off") }}
+                        <div class="invalid-feedback" id="ErrDate">
+                           <span class="form-text text-danger"></span>
+                        </div>
+                     </div>
+                     <div class="col-md-5">
+                        {{ form.Grp.label(class="font-weight-semibold") }}
+                        {{ form.Grp(class="form-control",id="Grp",autocomplete="off") }}
+                        <div class="invalid-feedback" id="ErrGrp">
+                           <span class="form-text text-danger"></span>
+                        </div>
+                     </div>
+                     <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top:28px;">Submit
+                        <i class="icon-paperplane ml-2"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="card-body">
+         <div class="row">
+            <div class="col-md-7">
+               <img src="{{ url_for('static', filename='photo/agil.png') }}" height="35" alt="agil"/>
+               <code> Société AGIL De Gestion et des services S.A.G.E.S</code>
+               {% if current_user.is_authenticated %}
+               <code id="codes">({{ current_user.Station.NomStation}})</code>
+               {% endif %}
+            </div>
+            <div class="col-md-4">
+               <div id="load" class="text-right" style="display: none;margin-right: 10px;">
+                  <img src="{{ url_for('static', filename='photo/loader.gif') }}" height="35"/>
+               </div>
+            </div>
+            <div class="col-md-1">
+               <button class="dt-button btn bg-teal-400" style="margin-left: -5px;" id="BtnImp" type="button" disabled>
+               <span>Imprimer</span>
+               </button>
+            </div>
+         </div>
+         <br/>
+         <div class="card card-table table-responsive shadow-0 mb-0">
+            <table class="table datatable-basic table-bordered table-striped table-hover table-sm" id="myTable" style="width: 100%">
+               <thead class="thead-dark">
+                  <tr>
+                     <th>Distributeur</th>
+                     <th>Groupe</th>
+                     <th>Voie</th>
+                     <th>Citerne</th>
+                     <th>Produit</th>
+                     <th>Indice</th>
+                     <th>Date</th>
+                     <th>Vente (L)</th>
+                     <th>P.U</th>
+                     <th>Vente (DT)</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td colspan='6'></td>
+                     <td class='font-weight-bold bg-dark'><u>Totale</u> :</td>
+                     <td>0 L</td>
+                     <td class='font-weight-bold bg-dark'><u>Totale</u> :</td>
+                     <td>0.000 TND</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

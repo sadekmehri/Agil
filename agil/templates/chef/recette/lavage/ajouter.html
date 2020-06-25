@@ -1,0 +1,202 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<script type='text/javascript' src="{{ url_for('static', filename='js/anytime.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.inputmask.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_recette_lavage') }}" class="breadcrumb-item">Recette Lavage</a>
+            <span class="breadcrumb-item active">Ajouter</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+         <div class="card">
+            <div class="card-header header-elements-inline">
+               <h5 class="card-title">Ajouter Recette Lavage</h5>
+            </div>
+            <div class="card-body">
+               <form method="post" action="">
+                  {{ form.hidden_tag() }}
+                  <div class="form-group">
+                     {{ form.Matricule.label(class="font-weight-semibold") }}
+                     {% if form.Matricule.errors %}
+                     {{ form.Matricule(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Matricule.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Matricule(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Date.label(class="font-weight-semibold") }}
+                     {% if form.Date.errors %}
+                     {{ form.Date(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Prix.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Date(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Debut.label(class="font-weight-semibold") }}
+                     <div class="input-group">
+                        <span class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-watch2"></i></span>
+                        </span>
+                        {% if form.Debut.errors %}
+                        {{ form.Debut(class="form-control is-invalid",autocomplete="off", value="00:00") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.Debut.errors %}
+                           <span class="form-text text-danger">
+                           {{ error }}
+                           </span>
+                           {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.Debut(class="form-control",placeholder="#",autocomplete="off") }}
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     {{ form.Fin.label(class="font-weight-semibold") }}
+                     <div class="input-group">
+                        <span class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-watch2"></i></span>
+                        </span>
+                        {% if form.Fin.errors %}
+                        {{ form.Fin(class="form-control is-invalid",autocomplete="off", value="00:00") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.Fin.errors %}
+                           <span class="form-text text-danger">
+                           {{ error }}
+                           </span>
+                           {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.Fin(class="form-control",placeholder="#",autocomplete="off") }}
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     {{ form.kilometrage.label(class="font-weight-semibold") }}
+                     {% if form.kilometrage.errors %}
+                     {{ form.kilometrage(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.kilometrage.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.kilometrage(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Type.label(class="font-weight-semibold") }}
+                     {% if form.Type.errors %}
+                     {{ form.Type(class="form-control is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Type.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Type(class="form-control") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Groupe.label(class="font-weight-semibold") }}
+                     {% if form.Groupe.errors %}
+                     {{ form.Groupe(class="form-control is-invalid") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Groupe.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Groupe(class="form-control") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Prix.label(class="font-weight-semibold") }}
+                     {% if form.Prix.errors %}
+                     {{ form.Prix(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Prix.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Prix(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="d-flex justify-content-end align-items-center">
+                     <button type="reset" class="btn btn-secondary" id="reset">Reset <i class="icon-reload-alt ml-2"></i></button>
+                     <button type="submit" class="btn btn-primary ml-3">Submit <i class="icon-paperplane ml-2"></i></button>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="col-md-3"></div>
+      </div>
+   </div>
+</div>
+<script>
+   $('#anytime-time, #anytime-time1').AnyTime_picker({
+       format: '%H:%i'
+   });
+   $("#matricule").inputmask(
+       {"mask": '9{1,3}-TUN-9999', "clearIncomplete": true }
+   );
+   $("#km").inputmask(
+       {"mask": '9{1,6}'}
+   );
+   $('#price').inputmask({
+        alias: 'numeric',
+        allowMinus: false,
+        digits: 2,
+        max: 999.99
+   });
+   $('#Date').datepicker({
+        todayBtn: 'linked',
+        format: "yyyy-mm-dd",
+        autoclose: true,
+        endDate:currrent_date()
+    });
+
+    function currrent_date() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        return (yyyy + '-' + mm + '-' + dd);
+    }
+</script>
+{% endblock %}

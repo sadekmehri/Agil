@@ -1,0 +1,170 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<script type='text/javascript' src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/buttons.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/pdfGenerator/jspdf.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/pdfGenerator/jspdf.plugin.autotable.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_employee_station') }}" class="breadcrumb-item">Employés</a>
+            <span class="breadcrumb-item active">Consulter</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-body">
+         <form method="post" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+               <div class="container">
+               <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-3" style="margin-left:-30px;">
+                     {{ form.Groupe.label(class="font-weight-semibold") }}
+                     {{ form.Groupe(class="form-control",autocomplete="off") }}
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="margin-top:28px;" >Submit <i class="icon-paperplane ml-2"></i></button>
+                  <div class="col-md-5"></div>
+               </div>
+               </div>
+            </div>
+         </form>
+         <table class="table datatable-basic table-bordered table-striped table-hover table-sm" id="myTable" style="width: 100%">
+            <thead class="thead-dark">
+               <tr>
+                  <th>Code Emp</th>
+                  <th>Cin</th>
+                  <th>Nom</th>
+                  <th>Prenom</th>
+                  <th>Role</th>
+                  <th>Groupe</th>
+                  <th class="text-center">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% if data %}
+               {% for idEmp, codeEmp, cinEmp, nomEmp, prenomEmp, NomRole, NomGroupe in data %}
+               <tr>
+                  <td>{{ codeEmp }}</td>
+                  <td>{{ cinEmp }}</td>
+                  <td>{{ nomEmp }}</td>
+                  <td>{{ prenomEmp }}</td>
+                  <td>{{ NomRole }}</td>
+                  <td>{{ NomGroupe }}</td>
+                  <td class="text-center">
+                     <a href="{{ url_for('chef.consulter_one_employee_station', id=idEmp, _external=True) }}"  id="{{ idEmp }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Consulter">
+                     <i class="fad fa-eye"></i>
+                     </a>
+                     <a href="{{ url_for('chef.modifier_employee_station',id=idEmp, _external=True) }}" id="{{ idEmp }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Modifier">
+                     <i class="fad fa-sliders-v-square"></i>
+                     </a>
+                     <a href="{{ url_for('chef.supprimer_employee_station',id=idEmp, _external=True) }}" id="{{ idEmp }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Supprimer">
+                     <i class="fad fa-trash-alt"></i>
+                     </a>
+                  </td>
+               </tr>
+               {% endfor %}
+               {% endif %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<script>
+   $('[data-toggle="tooltip"]').tooltip();
+   // Basic datatable
+   var table = $('.datatable-basic').DataTable({
+      fixedHeader: true,
+      autoWidth: false,
+      aaSorting: [[5, 'asc']],
+      dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+      language: {
+          search: '<span>Filter:</span> _INPUT_',
+          searchPlaceholder: 'Type to filter...',
+          lengthMenu: '<span>Show:</span> _MENU_',
+          paginate: {
+              'first': 'First',
+              'last': 'Last',
+              'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
+              'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+          }
+      },
+      columnDefs: [{
+          orderable: false,
+          targets: [6],
+          width:100
+      }],
+      lengthMenu: [
+          [25, 50, 100, -1],
+          [25, 50, 100, "All"]
+      ],buttons: {
+           buttons: [{
+           text: 'Ajouter à la liste',
+           className: 'btn bg-teal-400',
+           action: function(e, dt, node, config) {
+               location.href = '{{ url_for('chef.ajouter_employee_station') }}';
+           }
+       },{
+           text: 'Imprimer La liste',
+           className: 'btn bg-teal-400 ml-1',
+           action: function(e, dt, node, config) {
+                generate(currrent_date());
+           }}]
+       }
+
+   });
+
+   // Resize scrollable table when sidebar width changes
+   $('.sidebar-control').on('click', function() {
+      table.columns.adjust().draw();
+   });
+
+   function getStation(){
+      var idStation = "";
+      {% if current_user.is_authenticated %} idStation = '{{ current_user.Station.NomStation | string }}'; {% endif %}
+      return idStation;
+   }
+</script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chef/employee/impEmployee.js') }}"></script>
+{% endblock %}

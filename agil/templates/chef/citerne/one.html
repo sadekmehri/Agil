@@ -1,0 +1,227 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_citerne') }}" class="breadcrumb-item">Citerne</a>
+            <span class="breadcrumb-item active">Consulter One</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-header header-elements-inline">
+         <h5 class="card-title">Citerne information</h5>
+         <div class="header-elements">
+         </div>
+      </div>
+      <div class="card-body">
+         <form>
+            <div class="form-group">
+               <div class="row">
+                  <div class="col-md-6">
+                     {{ form.Code.label(class="font-weight-semibold") }}
+                     {{ form.Code(class="form-control", readonly="readonly") }}
+                  </div>
+                  <div class="col-md-6">
+                     {{ form.Car.label(class="font-weight-semibold") }}
+                     {{ form.Car(class="form-control",readonly="readonly") }}
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <div class="row">
+                  <div class="col-md-4">
+                     {{ form.Volume.label(class="font-weight-semibold") }}
+                     {{ form.Volume(class="form-control", readonly="readonly") }}
+                  </div>
+                  <div class="col-md-4">
+                     {{ form.Act.label(class="font-weight-semibold") }}
+                     {{ form.Act(class="form-control", readonly="readonly") }}
+                  </div>
+                  <div class="col-md-4">
+                     {{ form.Min.label(class="font-weight-semibold") }}
+                     {{ form.Min(class="form-control", readonly="readonly") }}
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-4">
+                     <div class="text-center">
+                        <h6 class="font-weight-semibold mb-0 mt-1">Current Citerne Volume</h6>
+                        <div class="font-size-sm text-muted mb-3" id="avg">0% average</div>
+                        <div class="svg-center" id="segmented_gauge"></div>
+                     </div>
+                  </div>
+                  <div class="col-md-4"></div>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+<script>
+   var StatisticWidgets = function() {
+       var _segmentedGauge = function(element, size, min, max, sliceQty) {
+
+           if (element) {
+               var d3Container = d3.select(element),
+                   width = size,
+                   height = (size / 2) + 20,
+                   radius = (size / 2),
+                   ringInset = 15,
+                   ringWidth = 20,
+
+                   pointerWidth = 10,
+                   pointerTailLength = 5,
+                   pointerHeadLengthPercent = 0.75,
+
+                   minValue = min,
+                   maxValue = max,
+
+                   minAngle = -90,
+                   maxAngle = 90,
+
+                   slices = sliceQty,
+                   range = maxAngle - minAngle,
+                   pointerHeadLength = Math.round(radius * pointerHeadLengthPercent);
+
+               var colors = d3.scale.linear()
+                   .domain([0, slices - 1])
+                   .interpolate(d3.interpolateHsl)
+                   .range(['#66BB6A', '#EF5350']);
+
+               var container = d3Container.append('svg');
+
+               var svg = container
+                   .attr('width', width)
+                   .attr('height', height);
+
+               var arc = d3.svg.arc()
+                   .innerRadius(radius - ringWidth - ringInset)
+                   .outerRadius(radius - ringInset)
+                   .startAngle(function(d, i) {
+                       var ratio = d * i;
+                       return deg2rad(minAngle + (ratio * range));
+                   })
+                   .endAngle(function(d, i) {
+                       var ratio = d * (i + 1);
+                       return deg2rad(minAngle + (ratio * range));
+                   });
+
+               var scale = d3.scale.linear()
+                   .range([0, 1])
+                   .domain([minValue, maxValue]);
+
+               var ticks = scale.ticks(slices);
+               var tickData = d3.range(slices)
+                   .map(function() {
+                       return 1 / slices;
+                   });
+
+               function deg2rad(deg) {
+                   return deg * Math.PI / 180;
+               }
+
+               function newAngle(d) {
+                   var ratio = scale(d);
+                   var newAngle = minAngle + (ratio * range);
+                   return newAngle;
+               }
+
+               var arcs = svg.append('g')
+                   .attr('transform', "translate(" + radius + "," + radius + ")")
+                   .style({
+                       'stroke': '#fff',
+                       'stroke-width': 2,
+                       'shape-rendering': 'crispEdges'
+                   });
+
+               arcs.selectAll('path')
+                   .data(tickData)
+                   .enter()
+                   .append('path')
+                   .attr('fill', function(d, i) {
+                       return colors(i);
+                   })
+                   .attr('d', arc);
+
+               var arcLabels = svg.append('g')
+                   .attr('transform', "translate(" + radius + "," + radius + ")");
+
+               arcLabels.selectAll('text')
+                   .data(ticks)
+                   .enter()
+                   .append('text')
+                   .attr('transform', function(d) {
+                       var ratio = scale(d);
+                       var newAngle = minAngle + (ratio * range);
+                       return 'rotate(' + newAngle + ') translate(0,' + (10 - radius) + ')';
+                   })
+                   .style({
+                       'text-anchor': 'middle',
+                       'font-size': 11,
+                       'fill': '#999'
+                   })
+                   .text(function(d) {
+                       return d + "%";
+                   });
+
+               var lineData = [
+                   [pointerWidth / 2, 0],
+                   [0, -pointerHeadLength],
+                   [-(pointerWidth / 2), 0],
+                   [0, pointerTailLength],
+                   [pointerWidth / 2, 0]
+               ];
+
+               var pointerLine = d3.svg.line()
+                   .interpolate('monotone');
+
+               var pointerGroup = svg
+                   .append('g')
+                   .data([lineData])
+                   .attr('transform', "translate(" + radius + "," + radius + ")");
+
+               pointer = pointerGroup
+                   .append('path')
+                   .attr('d', pointerLine)
+                   .attr('transform', 'rotate(' + minAngle + ')');
+
+               function update() {
+                    $(document).ready(function () {
+                        var valAct = $("#volAct").val();
+                        var valCiterne = $("#citerne").val();
+                        var div = (valAct/valCiterne).toFixed(2);
+                        $("#avg").text(div * 100+"%");
+                        var newAngle = minAngle + (div * 180);
+                         pointer.transition()
+                             .duration(2500)
+                             .ease('elastic')
+                             .attr('transform', 'rotate(' + newAngle + ')');
+                    });
+               }
+               update();
+           }
+       };
+
+       return {
+           init: function() {
+               _segmentedGauge("#segmented_gauge", 200, 0, 100, 5);
+           }
+       }
+   }();
+
+   document.addEventListener('DOMContentLoaded', function() {
+       StatisticWidgets.init();
+   });
+
+</script>
+{% endblock %}

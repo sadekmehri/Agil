@@ -1,0 +1,135 @@
+{% extends "./admin/layout/layout.html" %}
+{% block body %}
+<script type='text/javascript' src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/buttons.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0 ',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('admin.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('admin.consulter_station') }}" class="breadcrumb-item">Station</a>
+            <span class="breadcrumb-item active">Consulter</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-body">
+         <table class="table datatable-basic table-bordered table-striped table-hover table-sm" style="width: 100%">
+            <thead class="thead-dark">
+               <tr>
+                  <th>Nom Station</th>
+                  <th>Adress Station</th>
+                  <th>Ville</th>
+                  <th>Delegation</th>
+                  <th class="text-center">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% if data %}
+               {% for idStation,NomStation,AdrStation,nomDelegation,NomVille in data %}
+               <tr>
+                  <td>{{ NomStation }}</td>
+                  <td>{{ AdrStation }}</td>
+                  <td>{{ NomVille }}</td>
+                  <td>{{ nomDelegation }}</td>
+                  <td class="text-center">
+                     <div class="list-icons">
+                        <a href="{{ url_for('admin.consulter_stat_station',id=idStation, _external=True) }}"  id="{{ idStation }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Consulter">
+                        <i class="icon-eye8"></i>
+                        </a>
+                        <a  href="{{ url_for('admin.modifier_station',id=idStation, _external=True) }}" id="{{ idStation }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Modifier">
+                        <i class="icon-pencil7"></i>
+                        </a>
+                        <a href="{{ url_for('admin.supprimer_station',id=idStation, _external=True) }}" id="{{ idStation }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Supprimer">
+                        <i class="icon-trash"></i>
+                        </a>
+                     </div>
+                  </td>
+               </tr>
+               {% endfor %}
+               {% endif %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<script>
+   $('[data-toggle="tooltip"]').tooltip();
+   // Basic datatable
+   var table = $('.datatable-basic').DataTable({
+      fixedHeader: true,
+      autoWidth: false,
+      dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+      language: {
+          search: '<span>Filter:</span> _INPUT_',
+          searchPlaceholder: 'Type to filter...',
+          lengthMenu: '<span>Show:</span> _MENU_',
+          paginate: {
+              'first': 'First',
+              'last': 'Last',
+              'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
+              'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+          }
+      },
+      columnDefs: [{
+          orderable: false,
+          targets: [4],
+          width:100
+      }],
+      lengthMenu: [
+          [25, 50, 100, -1],
+          [25, 50, 100, "All"]
+      ], buttons: [{
+          text: 'Ajouter Station',
+          className: 'btn bg-teal-400',
+          action: function(e, dt, node, config) {
+              location.href = '{{ url_for('admin.ajouter_station') }}';
+          }
+      }]
+   });
+
+   // Resize scrollable table when sidebar width changes
+   $('.sidebar-control').on('click', function() {
+      table.columns.adjust().draw();
+   });
+
+</script>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "./admin/layout/layout.html" %}
+{% block body %}
+<!-- CSS -->
+<link href="{{ url_for('static', filename='css/placeholder-loading.min.css') }}" rel="stylesheet" type="text/css">
+<!-- JS -->
+<script type='text/javascript' src="{{ url_for('static', filename='js/dragula.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/extension_dnd.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('admin.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('admin.consulter_station') }}" class="breadcrumb-item">Station</a>
+            <span class="breadcrumb-item active">Statistique</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="mb-2">
+      <div class="row">
+         <div class="col-md-6" id="cards-target-left">
+            <!-- Section 1 -->
+            <div class="card mb-3 border">
+               <div class="card-header header-elements-sm-inline">
+                  <h6 class="card-title">Recette Carburant</h6>
+                  <div class="header-elements">
+                     <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges1">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                  </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadCarb">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                  <canvas id="carb" width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+            <!-- Section 2 -->
+            <div class="card mb-3 border">
+               <div class="card-header header-elements-sm-inline">
+                  <h6 class="card-title">Revenues</h6>
+                  <div class="header-elements">
+                     <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges3">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                  </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadRevenues">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                  <canvas id="revenues"  width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6" id="cards-target-right">
+            <!-- Section 1 -->
+            <div class="card mb-3 border">
+               <div class="card-header header-elements-sm-inline">
+                  <h6 class="card-title">Recette Lavage</h6>
+                  <div class="header-elements">
+                     <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges2">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                  </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadLav">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                  <canvas id="lav" width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+            <!-- Section 2 -->
+            <div class="card mb-3 border">
+               <div class="card-header header-elements-sm-inline">
+                  <h6 class="card-title">Depenses</h6>
+                  <div class="header-elements">
+                     <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges4">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                  </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadExpenses">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                  <canvas id="expenses" class=chart" width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function currrent_date() {
+       const today = new Date();
+       const dd = String(today.getDate()).padStart(2, '0');
+       const mm = String(today.getMonth() + 1).padStart(2, '0');
+       const yyyy = today.getFullYear();
+       return (yyyy + '-' + mm + '-' + dd);
+   }
+
+   function GetIdStation(){
+       let idStation = 0;
+       {% if data %} idStation = {{ data }}; {% endif %}
+      return idStation;
+   }
+   var startDate = null;
+   var endDate = null;
+   const Tab = ["#264653", "#2a9d8f","#e9c46a","#f4a261","#e76f51","#e63946","#a8dadc","#457b9d","#457b9d","#ffcdb2","#00a896","#e71d36","#f3ffbd","#ef233c","#02c39a"];
+
+</script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/LavageStat.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/CarburantStat.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/RevenueStat.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/ExpensesStat.js') }}"></script>
+{% endblock %}

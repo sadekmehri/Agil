@@ -1,0 +1,271 @@
+{% extends "./admin/layout/layout.html" %}
+{% block body %}
+<!-- CSS -->
+<link href="{{ url_for('static', filename='css/do.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/placeholder-loading.min.css') }}" rel="stylesheet" type="text/css">
+<!-- JS -->
+<script type='text/javascript' src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/dragula.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/extension_dnd.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.twbsPagination.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/notification/notif.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/do/app.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('admin.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="mb-2">
+      <div class="row">
+         <div class="col-md-6" id="cards-target-left">
+            <!-- Section 1 -->
+               <div class="card mb-3 border">
+              <div class="card-header header-elements-sm-inline">
+                   <div class="header-elements">
+                       <select class="form-control custom-select select_station" id="RevStat"></select>
+                   </div>
+                    <div class="header-elements" style="float:left;">
+                    <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges2">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                   </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadRevenues">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                  <canvas id="revenues" class=chart" width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+
+         </div>
+
+         <div class="col-md-6" id="cards-target-right">
+             <!-- Section 1 -->
+             <div class="card mb-3 border">
+               <div class="card-header header-elements-sm-inline">
+                   <div class="header-elements">
+                       <select class="form-control custom-select select_station" id="DepStat"></select>
+                   </div>
+                    <div class="header-elements" style="float:left;">
+                    <a class="text-default font-weight-semibold cursor-pointer dropdown-toggle" id="daterange-ranges1">
+                     <i class="icon-calendar3 mr-2"></i>
+                     <span></span>
+                     </a>
+                   </div>
+               </div>
+               <div class="card-body">
+                  <div id="loadExpenses">
+                     <div class="ph-item">
+                        <div class="ph-col-12">
+                           <div class="ph-picture"></div>
+                        </div>
+                     </div>
+                  </div>
+                   <canvas id="expenses" class=chart" width="600" height="300" style="display: none;"></canvas>
+               </div>
+            </div>
+
+            <div class="card mb-3 border">
+               <div class="card-header">
+                  <h4 class="mt-0 m-b-15 header-title text-center">Activités récente</h4>
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-4">
+                           <div class="input-group">
+                              <input type="text" class="form-control" name="filter" id="filter" style="margin-top:10px;" placeholder="Filter Date" autocomplete="off">
+                              <div class="input-group-append">
+                                 <button type="button" id="btn" style="margin-top:10px;" class="btn btn-info">
+                                 <i class="icon-search4"></i>
+                                 </button>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                           <button type="button" style="float: right;margin-top:10px;" class="btn btn-info" data-toggle="modal" data-target="#form">
+                           <i class="icon-plus3"></i> Add Event
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body" style="height:495px">
+                  <div id="data">
+                     <ol class="activity-feed mb-0" id="fetch">
+                     </ol>
+                  </div>
+               </div>
+               <div class="card-footer">
+                  <div class="row d-flex justify-content-center">
+                     <ul id="pagination" class="pagination-sm pagination">
+                        <li class="page-item first disabled"><a href="#" class="page-link">First</a></li>
+                        <li class="page-item prev disabled"><a href="#" class="page-link">Previous</a></li>
+                        <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                        <li class="page-item next disabled"><a href="#" class="page-link">Next</a></li>
+                        <li class="page-item last disabled"><a href="#" class="page-link">Last</a></li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Ajouter un évènement</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form action="" method="post" id="myForm">
+            {{ form.hidden_tag() }}
+            <div class="modal-body">
+               <div class="form-group">
+                  {{ form.Date.label(class="font-weight-semibold") }}
+                  {{ form.Date(class="form-control",id="date",placeholder="Date",autocomplete="off") }}
+                  <div class="invalid-feedback" id="ErrDate">
+                     <span class="form-text text-danger">
+                     </span>
+                  </div>
+               </div>
+               <div class="form-group">
+                  {{ form.Task.label(class="font-weight-semibold") }}
+                  {{ form.Task(class="form-control",id="list",placeholder="Your Event",autocomplete="off") }}
+                  <div class="invalid-feedback" id="ErrTask">
+                     <span class="form-text text-danger">
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+               <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
+               <button type="submit" name="submit" class="btn btn-success">Submit</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Mettre à jour l'événement</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form action="" method="post" id="myFormUpdate">
+            <div class="modal-body">
+               <div class="form-group">
+                  {{ formUpd.Date.label(class="font-weight-semibold") }}
+                  {{ formUpd.Date(class="form-control",id="dateU",placeholder="Date",autocomplete="off") }}
+                  <div class="invalid-feedback" id="ErrDateU">
+                     <span class="form-text text-danger">
+                     </span>
+                  </div>
+               </div>
+               <div class="form-group">
+                  {{ formUpd.Task.label(class="font-weight-semibold") }}
+                  {{ formUpd.Task(class="form-control",id="listU",placeholder="Your Event",autocomplete="off") }}
+                  <div class="invalid-feedback" id="ErrTaskU">
+                     <span class="form-text text-danger">
+                     </span>
+                  </div>
+               </div>
+            </div>
+            {{ formUpd.Id(class="form-control",id="event_id") }}
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+               <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
+               <button type="submit" name="submit" class="btn btn-success">Submit</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<script>
+const csrf_token = $("#csrf_token").val();
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+    }
+});
+
+fetchStation();
+
+function fetchStation() {
+    $.ajax({
+        type: 'post',
+        url: '/administrateur/StationFetch',
+        contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+        success: function(data, textStatus, xhr) {
+            if (xhr.status === 200) {
+                var opts = $.parseJSON(data);
+                $(".select_station").prop('required', true);
+                $.each(opts, function(i, d) {
+                    $('.select_station').append('<option value="' + d.Id + '">' + d.NomStat + '</option>');
+                });
+            }
+        }
+    });
+}
+
+function currrent_date() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    return (yyyy + '-' + mm + '-' + dd);
+
+}
+const Tab = ["#264653", "#2a9d8f","#e9c46a","#f4a261","#e76f51","#e63946","#a8dadc","#457b9d","#457b9d","#ffcdb2","#00a896","#e71d36","#f3ffbd","#ef233c","#02c39a"];
+
+var startDate = null;
+var endDate = null;
+</script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/ExpensesStatIndex.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/admin/charts/RevenueStatIndex.js') }}"></script>
+{% endblock %}

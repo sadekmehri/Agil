@@ -1,0 +1,139 @@
+{% extends "./main/layout/form.html" %}
+{% block body %}
+<script src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 2500,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<style>
+    #reload {
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    width:25px;
+    height:25px;
+	}
+	#input_img {
+    position:absolute;
+    bottom:5px;
+    right:40px;
+    width:25px;
+    height:25px;
+	}
+</style>
+<div class="content d-flex justify-content-center align-items-center">
+   <form class="login-form" method="post">
+      {{ form.hidden_tag() }}
+      <div class="card mb-3">
+         <div class="card-body">
+            <div class="text-center mb-3">
+               <i class="icon-lock2 icon-2x text-slate-300 border-slate-300 border-3 rounded-round p-3 mb-3 mt-1"></i>
+               <h5 class="mb-0">Reset Your Password</h5>
+               <span class="d-block text-muted">Don't Sahre this Password</span>
+            </div>
+            <div class="form-group form-group-feedback form-group-feedback-left">
+			    <img src="{{ url_for('static', filename='photo/load.png')}}" id="reload" alt=""/>
+                <img src="{{ url_for('static', filename='photo/eye.png')}}" id="input_img" alt=""/>
+               {{ form.Password(class="form-control",readonly="readonly",placeholder="Password",autocomplete="off") }}
+               <div class="form-control-feedback">
+                  <i class="icon-lock2 text-muted"></i>
+               </div>
+            </div>
+            <div class="form-group">
+               <button type="submit" class="btn btn-primary btn-block">Reset Password <i class="icon-circle-right2 ml-2"></i></button>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>
+
+<script>
+generate();
+
+
+$('#input_img').on('click', function() {
+    showPassword();
+});
+
+$('#reload').on('click', function() {
+    generate();
+});
+
+function showPassword() {
+    var passwordField = $('#Password');
+    var passwordFieldType = passwordField.attr('type');
+    if (passwordField.val() != '') {
+        if (passwordFieldType == 'password') {
+            passwordField.attr('type', 'text');
+            $("#input_img").attr("src", "{{ url_for('static', filename='photo/hide.png')}}");
+        } else {
+            passwordField.attr('type', 'password');
+            $("#input_img").attr("src", "{{ url_for('static', filename='photo/eye.png')}}");
+        }
+    }
+}
+
+function success() {
+    new Noty({
+        theme: ' alert bg-success text-white alert-styled-left p-0',
+        text: 'Password Is Loaded',
+        type: 'success',
+        progressBar: true,
+        layout: 'topRight',
+        timeout: 2500,
+        closeWith: ['button']
+    }).show();
+}
+
+function generate() {
+    $.ajax({
+        url: '{{ url_for('approot.generatePass') }}',
+        type: 'post',
+        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+        dataType: 'json',
+        cache: false,
+        success: function(data) {
+            if (data) {
+                var passwordField = $('#Password');
+                passwordField.val("");
+                var passwordFieldType = passwordField.attr('type');
+                passwordField.val(data.Password);
+                success();
+            }
+        }
+    });
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='photo/agil.png') }}" />
+    <title> Agil - Web Application </title>
+
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/styles.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/bootstrap_limitless.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/layout.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/components.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/colors.min.css') }}" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+
+    <!-- Core JS files -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <!-- /core JS files -->
+
+    <!-- Theme JS files -->
+    <script src="{{ url_for('static', filename='js/uniform.min.js') }}"></script>
+
+</head>
+
+<body>
+
+    <div class="page-content">
+
+        <div class="content-wrapper">
+            {% block body %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    $('.form-input-styled').uniform();
+</script>
+
+</html>

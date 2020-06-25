@@ -1,0 +1,226 @@
+{% extends "./chef/layout/profile.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.inputmask.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.setting') }}" class="breadcrumb-item">Paramètre</a>
+            <span class="breadcrumb-item active">Compte</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="main-panel">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-4 grid-margin stretch-card">
+               <div class="card border" style="height: 605px;">
+                  <div class="profile-card">
+                     <div class="profile-header">
+                        <div class="cover-image">
+                           <img src="{{ url_for('static', filename='photo/profile.jpg') }}" class="img img-fluid" id="imageChange" alt="">
+                        </div>
+                        <div class="user-image">
+                           <img src="{{ url_for('static', filename='photo/employee.jpg') }}" class="img" id="profile-image1" alt="">
+                        </div>
+                     </div>
+                     {% if data %}
+                     {% for codeEmp,cinEmp,emailEmp,nomEmp,prenomEmp,telEmp,dateEmp,expiryEmp,StatEmp,jrEmp in data %}
+                     <div class="profile-content">
+                        <div class="profile-name">{{ nomEmp }} {{ prenomEmp }}</div>
+                        <div class="profile-designation">Chef de Station</div>
+                        <ul class="profile-info-list">
+                           <a href="{{ url_for('chef.setting') }}" class="profile-info-list-item border"><i class="mdi mdi-eye"></i>À propos</a>
+                           <a href="{{ url_for('chef.settingHistorique') }}" class="profile-info-list-item border"><i class="mdi mdi-bookmark-check"></i>Historique de connexion</a>
+                           <a href="{{ url_for('chef.settingPassword') }}" class="profile-info-list-item border"><i class="mdi mdi-gate"></i>Password</a>
+                           <a href="{{ url_for('chef.dataNotification') }}" class="profile-info-list-item border"><i class="mdi mdi-clock"></i>Notifications</a>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-8 grid-margin stretch-card">
+               <div class="card border">
+                  <div class="card-body">
+                     <p class="card-title font-weight-bold">À propos</p>
+                     <hr>
+                     <p class="card-description">Informations de l'utilisateur</p>
+                     <ul class="about">
+                        <li class="about-items"><i class="mdi mdi-lock-outline icon-sm "></i><span class="about-item-name">Code:</span><span class="about-item-detail" id="codeEmp">{{ codeEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-format-align-left icon-sm "></i><span class="about-item-name">Cin:</span><span class="about-item-detail" id="cinEmp">{{ cinEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-account icon-sm "></i><span class="about-item-name">Nom:</span><span class="about-item-detail" id="nomEmp">{{ nomEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-account icon-sm "></i><span class="about-item-name">Prenom:</span><span class="about-item-detail" id="prenomEmp">{{ prenomEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-gate icon-sm "></i><span class="about-item-name">Password:</span><span class="about-item-detail">**********</span></li>
+                     </ul>
+                     <p class="card-description">Informations de base</p>
+                     <ul class="about">
+                        <li class="about-items"><i class="mdi mdi-cake icon-sm "></i><span class="about-item-name">Birthday:</span><span class="about-item-detail" id="dateEmp">{{ dateEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-city icon-sm "></i><span class="about-item-name">Profession:</span><span class="about-item-detail">Chef de Station</span></li>
+                        <li class="about-items"><i class="mdi mdi-clipboard-account icon-sm "></i><span class="about-item-name">Place:</span><span class="about-item-detail">{{ StatEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-alarm icon-sm "></i><span class="about-item-name">Expiry in:</span><span class="about-item-detail">{{ expiryEmp }} ({{ jrEmp }} restantes)</span></li>
+                     </ul>
+                     <p class="card-description">Informations de contact</p>
+                     <ul class="about">
+                        <li class="about-items"><i class="mdi mdi-phone icon-sm "></i><span class="about-item-name">Phone:</span><span class="about-item-detail" id="telEmp">{{ telEmp }}</span></li>
+                        <li class="about-items"><i class="mdi mdi-email-outline icon-sm "></i><span class="about-item-name">Email:</span><span class="about-item-detail"><a href="##" id="emailEmp">{{ emailEmp }}</a></span></li>
+                     </ul>
+                     <div class="d-flex justify-content-end align-items-center">
+                        <button type="button" id="btnUpdate" data-toggle="modal" data-target="#update" class="btn btn-primary ml-3">Update <i class="icon-paperplane ml-2"></i></button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="exampleModalLabel">Mettre à jour le compte</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <form action="" method="post" id="myFormUpdate">
+            {{ form.hidden_tag() }}
+            <div class="modal-body">
+               <div class="form-group">
+                  {{ form.Code.label(class="font-weight-semibold") }}
+                  {{ form.Code(class="form-control",placeholder="#",readonly="readonly",autocomplete="off") }}
+               </div>
+               <div class="form-group">
+                  {{ form.Email.label(class="font-weight-semibold") }}
+                  {{ form.Email(class="form-control",placeholder="#",readonly="readonly",autocomplete="off") }}
+               </div>
+               <div class="form-group">
+                  {{ form.Cin.label(class="font-weight-semibold") }}
+                  {% if form.Cin.errors %}
+                  {{ form.Cin(class="form-control is-invalid",autocomplete="off") }}
+                  <div class="invalid-feedback">
+                     {% for error in form.Cin.errors %}
+                     <span class="form-text text-danger">
+                     {{ error }}
+                     </span>
+                     {% endfor %}
+                  </div>
+                  {% else %}
+                  {{ form.Cin(class="form-control",placeholder="#",autocomplete="off") }}
+                  {% endif %}
+               </div>
+               <div class="form-group">
+                  {{ form.Nom.label(class="font-weight-semibold") }}
+                  {% if form.Nom.errors %}
+                  {{ form.Nom(class="form-control text-capitalize is-invalid",autocomplete="off") }}
+                  <div class="invalid-feedback">
+                     {% for error in form.Nom.errors %}
+                     <span class="form-text text-danger">
+                     {{ error }}
+                     </span>
+                     {% endfor %}
+                  </div>
+                  {% else %}
+                  {{ form.Nom(class="form-control text-capitalize",placeholder="#",autocomplete="off") }}
+                  {% endif %}
+               </div>
+               <div class="form-group">
+                  {{ form.Prenom.label(class="font-weight-semibold") }}
+                  {% if form.Prenom.errors %}
+                  {{ form.Prenom(class="form-control text-capitalize is-invalid",autocomplete="off") }}
+                  <div class="invalid-feedback">
+                     {% for error in form.Prenom.errors %}
+                     <span class="form-text text-danger">
+                     {{ error }}
+                     </span>
+                     {% endfor %}
+                  </div>
+                  {% else %}
+                  {{ form.Prenom(class="form-control text-capitalize",placeholder="#",autocomplete="off") }}
+                  {% endif %}
+               </div>
+               <div class="form-group">
+                  {{ form.Tel.label(class="font-weight-semibold") }}
+                  {% if form.Tel.errors %}
+                  {{ form.Tel(class="form-control is-invalid",autocomplete="off") }}
+                  <div class="invalid-feedback">
+                     {% for error in form.Tel.errors %}
+                     <span class="form-text text-danger">
+                     {{ error }}
+                     </span>
+                     {% endfor %}
+                  </div>
+                  {% else %}
+                  {{ form.Tel(class="form-control",placeholder="#",autocomplete="off") }}
+                  {% endif %}
+               </div>
+               <div class="form-group">
+                  {{ form.Date.label(class="font-weight-semibold") }}
+                  {% if form.Date.errors %}
+                  {{ form.Date(class="form-control is-invalid",autocomplete="off") }}
+                  <div class="invalid-feedback">
+                     {% for error in form.Date.errors %}
+                     <span class="form-text text-danger">
+                     {{ error }}
+                     </span>
+                     {% endfor %}
+                  </div>
+                  {% else %}
+                  {{ form.Date(class="form-control",placeholder="#",autocomplete="off") }}
+                  {% endif %}
+               </div>
+            </div>
+            <div class="modal-footer border-top-0 d-flex justify-content-center">
+               <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
+               <button type="submit" name="submit" class="btn btn-success">Submit</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+<script type='text/javascript' src="{{ url_for('static', filename='js/chef/setting/propos.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<script type='text/javascript' src="{{ url_for('static', filename='js/anytime.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/jquery.inputmask.min.js') }}"></script>
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_employee_station') }}" class="breadcrumb-item">Employés</a>
+            <span class="breadcrumb-item active">Ajouter</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+         <div class="card">
+            <div class="card-header header-elements-inline">
+               <h5 class="card-title">Ajouter un Employé</h5>
+            </div>
+            <div class="card-body">
+               <form method="post" action="">
+                  {{ form.hidden_tag() }}
+                  <div class="form-group">
+                     {{ form.Code.label(class="font-weight-semibold") }}
+                     {% if form.Code.errors %}
+                     {{ form.Code(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Code.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Code(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Cin.label(class="font-weight-semibold") }}
+                     {% if form.Cin.errors %}
+                     {{ form.Cin(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Cin.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Cin(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Nom.label(class="font-weight-semibold") }}
+                     {% if form.Nom.errors %}
+                     {{ form.Nom(class="form-control text-capitalize is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Nom.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Nom(class="form-control text-capitalize",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Prenom.label(class="font-weight-semibold") }}
+                     {% if form.Prenom.errors %}
+                     {{ form.Prenom(class="form-control text-capitalize is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Prenom.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Prenom(class="form-control text-capitalize",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Date.label(class="font-weight-semibold") }}
+                     {% if form.Date.errors %}
+                     {{ form.Date(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Date.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Date(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Tel.label(class="font-weight-semibold") }}
+                     {% if form.Tel.errors %}
+                     {{ form.Tel(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Tel.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Tel(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Sal.label(class="font-weight-semibold") }}
+                     {% if form.Sal.errors %}
+                     {{ form.Sal(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Sal.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Sal(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Groupe.label(class="font-weight-semibold") }}
+                     {% if form.Groupe.errors %}
+                     {{ form.Groupe(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Groupe.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Groupe(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="form-group">
+                     {{ form.Role.label(class="font-weight-semibold") }}
+                     {% if form.Role.errors %}
+                     {{ form.Role(class="form-control is-invalid",autocomplete="off") }}
+                     <div class="invalid-feedback">
+                        {% for error in form.Role.errors %}
+                        <span class="form-text text-danger">
+                        {{ error }}
+                        </span>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     {{ form.Role(class="form-control",placeholder="#",autocomplete="off") }}
+                     {% endif %}
+                  </div>
+                  <div class="d-flex justify-content-end align-items-center">
+                     <button type="reset" class="btn btn-secondary" id="reset">Reset <i class="icon-reload-alt ml-2"></i></button>
+                     <button type="submit" class="btn btn-primary ml-3">Submit <i class="icon-paperplane ml-2"></i></button>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="col-md-3"></div>
+      </div>
+   </div>
+</div>
+<script>
+   $("#Cin,#Tel").inputmask(
+       {"mask": '9{8}'}
+   );
+
+   $('#Sal').inputmask({
+        alias: 'numeric',
+        allowMinus: false,
+        digits: 3,
+        max: 999999.999
+   });
+
+    $('#Date').datepicker({
+       todayBtn: 'linked',
+       format: "yyyy-mm-dd",
+       autoclose: true,
+       todayHighlight: true,
+       endDate: currrent_date()
+   });
+
+   function currrent_date() {
+       var today = new Date();
+       var dd = String(today.getDate()).padStart(2, '0');
+       var mm = String(today.getMonth() + 1).padStart(2, '0');
+       var yyyy = today.getFullYear();
+       return (yyyy + '-' + mm + '-' + dd);
+   }
+
+</script>
+{% endblock %}

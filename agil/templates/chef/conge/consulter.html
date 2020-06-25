@@ -1,0 +1,206 @@
+{% extends "./chef/layout/layout.html" %}
+{% block body %}
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css">
+<script type='text/javascript' src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/buttons.min.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/noty.min.js') }}"></script>
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-success text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'success',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+{% if messages %}
+{% for message in messages %}
+<script>
+   new Noty({
+       theme: ' alert bg-danger text-white alert-styled-left p-0',
+       text: '{{ message }}',
+       type: 'error',
+       progressBar: true,
+       layout: 'topRight',
+       timeout: 3000,
+       closeWith: ['button']
+   }).show();
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="page-header page-header-light">
+   <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+      <div class="d-flex">
+         <div class="breadcrumb">
+            <a href="{{ url_for('chef.index') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i>Home</a>
+            <a href="{{ url_for('chef.consulter_conge') }}" class="breadcrumb-item">Congé</a>
+            <span class="breadcrumb-item active">Consulter</span>
+         </div>
+         <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+      </div>
+   </div>
+</div>
+<div class="content">
+   <div class="card">
+      <div class="card-body">
+         <div class="row">
+            <div class="col-md-3"> </div>
+            <form method="post" action="" id="idForm">
+               {{ form.hidden_tag() }}
+               <div class="form-group">
+                  <div class="row">
+                     <div class="col-md-4">
+                        {{ form.DatDeb.label(class="font-weight-semibold") }}
+                        {% if form.DatDeb.errors %}
+                        {{ form.DatDeb(class="form-control is-invalid",autocomplete="off") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.DatDeb.errors %}
+                           <span class="form-text text-danger">
+                           {{ error }}
+                           </span>
+                           {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.DatDeb(class="form-control",placeholder="#",autocomplete="off") }}
+                        {% endif %}
+                     </div>
+                     <div class="col-md-4">
+                        {{ form.DatFin.label(class="font-weight-semibold") }}
+                        {% if form.DatFin.errors %}
+                        {{ form.DatFin(class="form-control is-invalid",autocomplete="off") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.DatFin.errors %}
+                           <span class="form-text text-danger">
+                           {{ error }}
+                           </span>
+                           {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.DatFin(class="form-control",placeholder="#",autocomplete="off") }}
+                        {% endif %}
+                     </div>
+                     <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary" style="margin-top:28px;">Submit
+                        <i class="icon-paperplane ml-2"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <table class="table datatable-basic table-bordered table-striped table-hover table-sm" style="width: 100%">
+            <thead class="thead-dark">
+               <tr>
+                  <th>Code Employee</th>
+                  <th>Cin</th>
+                  <th>Nom</th>
+                  <th>Prenom</th>
+                  <th>Groupe</th>
+                  <th>Type Congé</th>
+                  <th>Durée</th>
+                  <th class="text-center">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% if data %}
+               {% for idConge,codeEmp,cinEmp,nomEmp,prenomEmp,NomGroupe,Type,Duree in data %}
+               <tr>
+                  <td>{{ codeEmp }}</td>
+                  <td>{{ cinEmp }}</td>
+                  <td>{{ nomEmp }}</td>
+                  <td>{{ prenomEmp }}</td>
+                  <td>{{ NomGroupe }}</td>
+                  <td>{{ Type }}</td>
+                  <td>{{ Duree }}</td>
+                  <td class="text-center">
+                     <div class="list-icons">
+                        <a  href="{{ url_for('chef.modifier_conge',id=idConge, _external=True) }}" id="{{ idConge }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Modifier">
+                        <i class="icon-pencil7"></i>
+                        </a>
+                        <a href="{{ url_for('chef.supprimer_conge',id=idConge, _external=True) }}" id="{{ idConge }}" class="list-icons-item" data-toggle="tooltip" data-placement="bottom" title="Supprimer">
+                        <i class="icon-trash"></i>
+                        </a>
+                     </div>
+                  </td>
+               </tr>
+               {% endfor %}
+               {% endif %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<script>
+   $('[data-toggle="tooltip"]').tooltip();
+   // Basic datatable
+   var table = $('.datatable-basic').DataTable({
+       autoWidth: false,
+       fixedColumns: true,
+       dom: '<"datatable-header"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+       language: {
+           search: '<span>Filter:</span> _INPUT_',
+           searchPlaceholder: 'Type to filter...',
+           lengthMenu: '<span>Show:</span> _MENU_',
+           paginate: {
+               'first': 'First',
+               'last': 'Last',
+               'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
+               'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+           }
+       },
+       columnDefs: [{
+           orderable: false,
+           targets: [7],
+           width:100
+       }],
+       lengthMenu: [
+           [25, 50, 100, -1],
+           [25, 50, 100, "All"]
+       ], buttons: {
+           buttons: [
+           {
+           text: 'Ajouter Congé',
+           className: 'btn bg-teal-400',
+           action: function(e, dt, node, config) {
+               location.href = "{{ url_for('chef.ajouter_conge') }}";
+           }
+       },{
+           text: 'Imprimer la liste',
+           className: 'btn bg-teal-400 ml-1',
+           action: function(e, dt, node, config) {
+               location.href = "{{ url_for('chef.imprimer_liste_conge') }}";
+           }}]
+       }
+   });
+
+   // Resize scrollable table when sidebar width changes
+   $('.sidebar-control').on('click', function() {
+       table.columns.adjust().draw();
+   });
+
+    $('#DateDeb,#DateFin').datepicker({
+         todayBtn: 'linked',
+         format: 'yyyy-mm-dd',
+         autoclose: true
+    });
+
+    function currrent_date() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        return (yyyy + '-' + mm + '-' + dd);
+    }
+</script>
+{% endblock %}
